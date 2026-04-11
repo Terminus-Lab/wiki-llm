@@ -1,13 +1,16 @@
+from __future__ import annotations
+
 from datetime import date
 from pathlib import Path
 from typing import Literal
+
 import frontmatter
 from pydantic import BaseModel, ValidationError
 
 from wiki_llm.exceptions import PageNotFound, PageParseError
 
 
-PageType = Literal["entity", "summary", "concept", "comparison", "analysis"]
+PageType = Literal["entity", "concept", "summary", "comparison", "analysis"]
 
 
 class WikiPage(BaseModel):
@@ -24,7 +27,6 @@ class WikiPage(BaseModel):
 
 def read_page(path: Path) -> WikiPage:
     """Parse a single wiki page from a markdown file with YAML frontmatter."""
-
     if not path.exists(follow_symlinks=True):
         raise PageNotFound(path)
 
