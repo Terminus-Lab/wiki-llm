@@ -1,5 +1,7 @@
-from pathlib import Path
+from __future__ import annotations
+
 import tempfile
+from pathlib import Path
 
 import frontmatter
 
@@ -13,7 +15,6 @@ def write_page(page: WikiPage) -> None:
     path. On POSIX this rename is atomic — a crash mid-write never leaves a
     partial file at the destination.
     """
-
     post = frontmatter.Post(
         page.body,
         title=page.title,
@@ -24,8 +25,7 @@ def write_page(page: WikiPage) -> None:
         created=page.created,
         updated=page.updated,
     )
-
-    content = frontmatter.dumps(post=post)
+    content = frontmatter.dumps(post)
 
     dest = page.path
     dest.parent.mkdir(parents=True, exist_ok=True)
