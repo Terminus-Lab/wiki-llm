@@ -77,9 +77,10 @@ def test_pdf_extraction(tmp_path):
 # --- dispatcher ---
 
 def test_unsupported_extension_raises(tmp_path):
+    from wiki_llm.exceptions import UnsupportedFileType
     f = tmp_path / "file.docx"
     f.write_text("data")
-    with pytest.raises(ValueError, match="Unsupported file type"):
+    with pytest.raises(UnsupportedFileType):
         extract(f)
 
 
