@@ -1,6 +1,6 @@
 from pathlib import Path
 
 
-def extract(filePath: Path) -> str:
-    """Markdown passthrough - return content as it is"""
-    return filePath.read_text(encoding="utf-8")
+def extract(path: Path) -> str:
+    """Markdown passthrough — return file contents as-is."""
+    return path.read_text(encoding="utf-8")
