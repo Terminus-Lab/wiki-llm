@@ -1,5 +1,3 @@
-
-
 from pathlib import Path
 import tempfile
 
@@ -18,13 +16,13 @@ def write_page(page: WikiPage) -> None:
 
     post = frontmatter.Post(
         page.body,
-        title = page.title,
-        type = page.title,
-        tags = page.tags,
-        sources = page.sources,
-        related = page.related,
-        created = page.created,
-        updated = page.updated,
+        title=page.title,
+        type=page.title,
+        tags=page.tags,
+        sources=page.sources,
+        related=page.related,
+        created=page.created,
+        updated=page.updated,
     )
 
     content = frontmatter.dumps(post=post)
@@ -33,7 +31,7 @@ def write_page(page: WikiPage) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
 
     with tempfile.NamedTemporaryFile(
-        mode = "w",
+        mode="w",
         dir=dest.parent,
         suffix=".tmp",
         delete=False,
@@ -41,5 +39,5 @@ def write_page(page: WikiPage) -> None:
     ) as f:
         f.write(content)
         tmp = Path(f.name)
-    
+
     tmp.replace(dest)
