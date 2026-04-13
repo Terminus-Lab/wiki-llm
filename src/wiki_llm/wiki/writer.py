@@ -17,7 +17,7 @@ def write_page(page: WikiPage) -> None:
     post = frontmatter.Post(
         page.body,
         title=page.title,
-        type=page.title,
+        type=page.type,
         tags=page.tags,
         sources=page.sources,
         related=page.related,

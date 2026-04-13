@@ -2,7 +2,7 @@ from datetime import date
 
 import pytest
 
-from wiki_llm.wiki.reader import WikiPage
+from wiki_llm.wiki.reader import WikiPage, read_page
 from wiki_llm.wiki.writer import write_page
 
 
@@ -30,3 +30,17 @@ def test_write_no_tmp_file_left(sample_page) -> None:
     write_page(sample_page)
     tmp_file = list(sample_page.path.parent.glob("*.tmp"))
     assert tmp_file == [], "No tmp files left on the disk"
+
+
+def test_write_read(sample_page) -> None:
+    write_page(sample_page)
+    loaded_page = read_page(sample_page.path)
+
+    assert loaded_page.title == sample_page.title
+    assert loaded_page.type == sample_page.type
+    assert loaded_page.tags == sample_page.tags
+    assert loaded_page.sources == sample_page.sources
+    assert loaded_page.related == sample_page.related
+    assert loaded_page.created == sample_page.created
+    assert loaded_page.updated == sample_page.updated
+    assert loaded_page.body.strip() == sample_page.body.strip()

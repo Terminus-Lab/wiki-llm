@@ -25,7 +25,7 @@ class WikiPage(BaseModel):
 def read_page(path: Path) -> WikiPage:
     """Parse a single wiki page from a markdown file with YAML frontmatter."""
 
-    if not path.exists():
+    if not path.exists(follow_symlinks=True):
         raise PageNotFound(path)
 
     try:
@@ -41,8 +41,8 @@ def read_page(path: Path) -> WikiPage:
             updated=post["updated"],
             body=post.content,
         )
-    except (KeyError, ValidationError) as ex:
-        raise PageParseError(path=path, reason=str(ex))
+    except (KeyError, ValidationError) as exc:
+        raise PageParseError(path, str(exc)) from exc
 
 
 def read_all_pages(wiki_dir: Path) -> list[WikiPage]:
