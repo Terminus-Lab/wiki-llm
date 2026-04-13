@@ -80,3 +80,19 @@ def test_creates_parent_dirs(tmp_path) -> None:
 
     write_page(page=page)
     assert page.path.exists(), f"New wiki page should be created in {page.path}"
+
+
+def test_optional_fields_round_trip(tmp_path):
+    page = WikiPage(
+        path=tmp_path / "minimal.md",
+        title="Minimal",
+        type="entity",
+        created=date(2026, 4, 11),
+        updated=date(2026, 4, 11),
+        body="Body.\n",
+    )
+    write_page(page)
+    loaded = read_page(page.path)
+    assert loaded.tags == []
+    assert loaded.sources == []
+    assert loaded.related == []
