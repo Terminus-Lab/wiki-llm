@@ -44,3 +44,39 @@ def test_write_read(sample_page) -> None:
     assert loaded_page.created == sample_page.created
     assert loaded_page.updated == sample_page.updated
     assert loaded_page.body.strip() == sample_page.body.strip()
+
+
+def test_overwrite_existing(sample_page) -> None:
+    write_page(sample_page)
+
+    updated = sample_page.model_copy(
+        update={
+            "title": "Attention Mechanism (revised)",
+            "updated": date(2024, 6, 4),
+        }
+    )
+    write_page(updated)
+
+    loaded_page = read_page(sample_page.path)
+    assert loaded_page.title == "Attention Mechanism (revised)", (
+        "Page title should be: Attention Mechanism (revised)"
+    )
+
+    assert loaded_page.updated == date(2024, 6, 4), "Date should be updated"
+
+
+def test_creates_parent_dirs(tmp_path) -> None:
+    page = WikiPage(
+        path=tmp_path / "wiki" / "sub" / "page.md",
+        title="Nested",
+        type="entity",
+        tags=[],
+        sources=[],
+        related=[],
+        created=date(2026, 4, 11),
+        updated=date(2026, 4, 11),
+        body="Body.\n",
+    )
+
+    write_page(page=page)
+    assert page.path.exists(), f"New wiki page should be created in {page.path}"
