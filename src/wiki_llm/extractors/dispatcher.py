@@ -20,3 +20,7 @@ def extract(filePath: Path) -> str:
     if extractor is None:
         raise UnsupportedFileType(filePath)
     return extract(path=filePath)
+
+
+def supported_extensions() -> list[str]:
+    return list(_EXTRACTORS.keys())
