@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -10,8 +10,8 @@ def append_log(
     created: list[Path],
     updated: list[Path],
 ) -> None:
-    """Append one ingest entry to log.md"""
-    ts = datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    """Append one ingest entry to log.md."""
+    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     lines = [f"## {ts}\n"]
     lines.append(f"- **Source:** {source}")

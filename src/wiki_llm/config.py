@@ -16,8 +16,8 @@ class Settings(BaseSettings):
 
     # LLM
     llm_provider: str = "anthropic"
-    llm_model: str = "claude-sonnet-4-20250514"
-    llm_api_key: str | None = None
+    llm_model: str = "claude-sonnet-4-6"
+    llm_api_key: str = ""
 
     # Embeddings
     embedding_model: str = "all-MiniLM-L6-v2"
