@@ -27,7 +27,7 @@ class WikiPage(BaseModel):
 
 def read_page(path: Path) -> WikiPage:
     """Parse a single wiki page from a markdown file with YAML frontmatter."""
-    if not path.exists(follow_symlinks=True):
+    if not path.exists():
         raise PageNotFound(path)
 
     try:

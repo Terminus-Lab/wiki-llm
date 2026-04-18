@@ -4,11 +4,7 @@ import re
 import sqlite3
 from pathlib import Path
 
-<<<<<<< HEAD
 from wiki_llm.exceptions import WikiIndexError
-=======
-from wiki_llm.exceptions import IndexError
->>>>>>> 20eb05c (Add FAISS vector embedding index with tests)
 from wiki_llm.indexing import SearchResult
 from wiki_llm.wiki.reader import WikiPage
 
