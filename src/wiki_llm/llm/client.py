@@ -44,7 +44,7 @@ class LLMClient:
         # Accept a pre-built client for testing (dependency injection)
         self._client = _client or anthropic.Anthropic(api_key=api_key or None)
 
-    def extract(self, text: str, schema_text: str, index_text: str) -> IngestResponse:
+    def extract(self, text: str, schema_text: str, index_text: str, guidance: str = "") -> IngestResponse:
         """Call the LLM to extract structured knowledge from source text.
 
         Args:
@@ -71,7 +71,8 @@ class LLMClient:
                         "role": "user",
                         "content": (
                             f"Current wiki index:\n{index_text}\n\n"
-                            f"Source document:\n{text}"
+                            + (f"Guidance: {guidance}\n\n" if guidance else "")
+                            + f"Source document:\n{text}"
                         ),
                     }
                 ],
