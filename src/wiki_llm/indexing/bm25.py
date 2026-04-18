@@ -4,6 +4,7 @@ from pathlib import Path
 import re
 import sqlite3
 
+from wiki_llm.exceptions import WikiIndexError
 from wiki_llm.indexing import SearchResult
 from wiki_llm.wiki.reader import WikiPage
 
@@ -32,7 +33,7 @@ class BM25Index:
             self.__conn.execute(_SCHEMA)
             self.__conn.commit()
         except sqlite3.Error as err:
-            raise IndexError(str(err)) from err
+            raise WikiIndexError(str(err)) from err
 
     def upsert(self, page: WikiPage) -> None:
         """Insert or replace a page in the index."""
@@ -45,15 +46,15 @@ class BM25Index:
             )
             self.__conn.commit()
         except sqlite3.Error as exc:
-            raise IndexError(str(exc)) from exc
+            raise WikiIndexError(str(exc)) from exc
 
     def delete(self, page_path: Path) -> None:
         """Remove a page from the index."""
         try:
-            self._conn.execute("DELETE FROM pages WHERE path = ?", (str(page_path),))
-            self._conn.commit()
+            self.__conn.execute("DELETE FROM pages WHERE path = ?", (str(page_path),))
+            self.__conn.commit()
         except sqlite3.Error as exc:
-            raise IndexError(str(exc)) from exc
+            raise WikiIndexError(str(exc)) from exc
 
     # --- read ---
 
@@ -63,7 +64,7 @@ class BM25Index:
         if not clean:
             return []
         try:
-            cursor = self._conn.execute(
+            cursor = self.__conn.execute(
                 """
                 SELECT path, title, bm25(pages) AS score
                 FROM pages
@@ -78,7 +79,7 @@ class BM25Index:
                 for row in cursor.fetchall()
             ]
         except sqlite3.Error as exc:
-            raise IndexError(str(exc)) from exc
+            raise WikiIndexError(str(exc)) from exc
 
     def count(self) -> int:
         """Number of pages currently indexed."""

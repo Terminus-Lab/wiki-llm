@@ -2,8 +2,8 @@ import json
 
 import pytest
 
-from wiki_llm.extractors.dispatcher import supported_extensions
-from wiki_llm.extractors.markdown import extract
+from wiki_llm.extractors.dispatcher import extract, supported_extensions
+from wiki_llm.extractors.markdown import extract as extract_markdown
 
 
 # --- markdown ---
@@ -12,7 +12,7 @@ from wiki_llm.extractors.markdown import extract
 def test_markdown_passthrough(tmp_path):
     f = tmp_path / "doc.md"
     f.write_text("# Hello\n\nSome **bold** text.")
-    assert extract(f) == "# Hello\n\nSome **bold** text."
+    assert extract_markdown(f) == "# Hello\n\nSome **bold** text."
 
 
 # --- plaintext ---

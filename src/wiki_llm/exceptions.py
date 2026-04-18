@@ -1,20 +1,20 @@
 class WikiError(Exception):
-    """Base Error for all wiki-llm exceptions"""
+    """Base class for all wiki-llm errors."""
 
 
 class PageNotFound(WikiError):
-    """Rase when a wiki page does not exist on the disk"""
+    """Raised when a wiki page path does not exist on disk."""
 
-    def __init__(self, path: object):
-        super().__init__(f"Wiki page not found on: ${path}")
+    def __init__(self, path: object) -> None:
+        super().__init__(f"Wiki page not found: {path}")
         self.path = path
 
 
 class PageParseError(WikiError):
-    """Raise when a page file cannot be parsed. Bad schema"""
+    """Raised when a page file cannot be parsed (bad frontmatter or schema)."""
 
-    def __init__(self, path: object, reason: str):
-        super().__init__(f"Wiki page: {path}, can't be parse. Reason: {reason}")
+    def __init__(self, path: object, reason: str) -> None:
+        super().__init__(f"Failed to parse wiki page {path}: {reason}")
         self.path = path
         self.reason = reason
 
@@ -22,15 +22,23 @@ class PageParseError(WikiError):
 class UnsupportedFileType(WikiError):
     """Raised when no extractor exists for the given file extension."""
 
-    def __init__(self, path: object, ext: str):
-        super().__init__(f"No extractors for '{ext}', path: {path}")
+    def __init__(self, path: object, ext: str) -> None:
+        super().__init__(f"No extractor for '{ext}' ({path})")
         self.path = path
         self.ext = ext
 
 
-class IndexError(WikiError):
-    """Raised when a BM25 index operation fails."""
+class WikiIndexError(WikiError):
+    """Raised when an index operation (BM25 or vector) fails."""
 
-    def __init__(self, reason: str):
-        super().__init__(f"Indexing error. Reason: {reason}")
+    def __init__(self, reason: str) -> None:
+        super().__init__(f"Index error: {reason}")
+        self.reason = reason
+
+
+class LLMError(WikiError):
+    """Raised when an LLM API call fails."""
+
+    def __init__(self, reason: str) -> None:
+        super().__init__(f"LLM error: {reason}")
         self.reason = reason

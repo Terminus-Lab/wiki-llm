@@ -13,13 +13,13 @@ _EXTRACTORS = {
 }
 
 
-def extract(filePath: Path) -> str:
+def extract(path: Path) -> str:
     """Dispatch to the correct extractor based on file extension."""
-    ext = filePath.suffix.lower()
+    ext = path.suffix.lower()
     extractor = _EXTRACTORS.get(ext)
     if extractor is None:
-        raise UnsupportedFileType(filePath)
-    return extract(path=filePath)
+        raise UnsupportedFileType(path, ext)
+    return extractor(path)
 
 
 def supported_extensions() -> list[str]:

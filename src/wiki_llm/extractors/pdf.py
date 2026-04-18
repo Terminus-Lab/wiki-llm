@@ -3,10 +3,7 @@ from pathlib import Path
 import pymupdf
 
 
-def extract(filePath: Path) -> str:
+def extract(file_path: Path) -> str:
     """Extract plain text from a PDF using PyMuPDF."""
-
-    doc = pymupdf.open(str(filePath))
-    pages = [page.get_text() for page in doc]
-    doc.close()
-    return "\n".join(pages)
+    with pymupdf.open(str(file_path)) as doc:
+        return "\n".join(page.get_text() for page in doc)
