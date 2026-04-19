@@ -7,7 +7,7 @@ def test_defaults():
     s = Settings()
     assert s.workspace == Path("./workspace")
     assert s.llm_provider == "anthropic"
-    assert s.llm_model == "claude-sonnet-4-20250514"
+    assert s.llm_model == "claude-sonnet-4-6"
     assert s.embedding_model == "all-MiniLM-L6-v2"
     assert s.top_k == 5
     assert s.bm25_weight == 0.5

@@ -1,22 +1,20 @@
 import json
-
 import pytest
+from pathlib import Path
 
 from wiki_llm.extractors.dispatcher import extract, supported_extensions
-from wiki_llm.extractors.markdown import extract as extract_markdown
+from wiki_llm.extractors import markdown, plaintext, html
 
 
 # --- markdown ---
 
-
 def test_markdown_passthrough(tmp_path):
     f = tmp_path / "doc.md"
     f.write_text("# Hello\n\nSome **bold** text.")
-    assert extract_markdown(f) == "# Hello\n\nSome **bold** text."
+    assert extract(f) == "# Hello\n\nSome **bold** text."
 
 
 # --- plaintext ---
-
 
 def test_txt(tmp_path):
     f = tmp_path / "notes.txt"
@@ -37,7 +35,6 @@ def test_json(tmp_path):
 
 
 # --- html ---
-
 
 def test_html_converts_headings(tmp_path):
     f = tmp_path / "page.html"
@@ -63,7 +60,6 @@ def test_html_strips_tags(tmp_path):
 
 # --- pdf ---
 
-
 def test_pdf_extraction(tmp_path):
     import pymupdf
 
@@ -80,10 +76,8 @@ def test_pdf_extraction(tmp_path):
 
 # --- dispatcher ---
 
-
 def test_unsupported_extension_raises(tmp_path):
     from wiki_llm.exceptions import UnsupportedFileType
-
     f = tmp_path / "file.docx"
     f.write_text("data")
     with pytest.raises(UnsupportedFileType):

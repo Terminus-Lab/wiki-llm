@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from pathlib import Path
 import re
 import sqlite3
+from pathlib import Path
 
 from wiki_llm.exceptions import WikiIndexError
 from wiki_llm.indexing import SearchResult
@@ -55,8 +55,6 @@ class BM25Index:
             self.__conn.commit()
         except sqlite3.Error as exc:
             raise WikiIndexError(str(exc)) from exc
-
-    # --- read ---
 
     def search(self, query: str, top_k: int = 5) -> list[SearchResult]:
         """Full-text BM25 search. Returns results ranked best-first."""

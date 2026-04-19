@@ -1,8 +1,9 @@
-from datetime import date
-
 import pytest
+from datetime import date
+from pathlib import Path
 
-from wiki_llm.wiki.reader import read_all_pages, read_page
+from wiki_llm.wiki.reader import WikiPage, read_page, read_all_pages
+
 
 SAMPLE_PAGE = """\
 ---

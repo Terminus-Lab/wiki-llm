@@ -1,9 +1,13 @@
+from __future__ import annotations
+
 import json
 from pathlib import Path
 from typing import Protocol
+
 import faiss
 import numpy as np
 
+from wiki_llm.exceptions import WikiIndexError
 from wiki_llm.indexing import SearchResult
 from wiki_llm.wiki.reader import WikiPage
 
@@ -13,40 +17,35 @@ class _Encoder(Protocol):
 
     def get_sentence_embedding_dimension(self) -> int: ...
 
-    def encode(self, sentence: list[str], normalized_embeddings: bool = True) -> np: ...
+    def encode(
+        self, sentences: list[str], normalize_embeddings: bool = True
+    ) -> np.ndarray: ...
 
 
 class EmbeddingIndex:
     """FAISS-backed vector index. One embedding per wiki page."""
 
-    def __init__(
-        self,
-        index_dir: Path,
-        model: _Encoder | None = None,
-        model_name: str = "all-MiniLM-L6-v2",
-    ) -> None:
-
+    def __init__(self, index_dir: Path, model: _Encoder | None = None, model_name: str = "all-MiniLM-L6-v2") -> None:
         try:
             index_dir.mkdir(parents=True, exist_ok=True)
-        except OSError as err:
-            raise IndexError(str(err)) from err
+        except OSError as exc:
+            raise WikiIndexError(str(exc)) from exc
 
-        self.faiss_path = index_dir / "vector.faiss"
-        self.meta_path = index_dir / "vectors_meta.json"
+        self._faiss_path = index_dir / "vectors.faiss"
+        self._meta_path = index_dir / "vectors_meta.json"
 
         if model is not None:
             self._model = model
         else:
             try:
                 from sentence_transformers import SentenceTransformer
-
-                self.model = SentenceTransformer(model_name)
+                self._model = SentenceTransformer(model_name)
             except Exception as exc:
-                raise IndexError("Failed to load embedding model") from exc
+                raise WikiIndexError(f"Failed to load embedding model '{model_name}': {exc}") from exc
 
         self._dim: int = self._model.get_sentence_embedding_dimension()
 
-        if self._faiss_path_exists() and self._meta_path.exists():
+        if self._faiss_path.exists() and self._meta_path.exists():
             self._load()
         else:
             self._index = faiss.IndexFlatIP(self._dim)
@@ -93,9 +92,7 @@ class EmbeddingIndex:
             if idx < 0:
                 continue
             m = self._meta[idx]
-            results.append(
-                SearchResult(path=Path(m["path"]), title=m["title"], score=float(score))
-            )
+            results.append(SearchResult(path=Path(m["path"]), title=m["title"], score=float(score)))
         return results
 
     def count(self) -> int:

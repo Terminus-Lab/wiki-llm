@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from wiki_llm.exceptions import UnsupportedFileType
 from wiki_llm.extractors import html, markdown, pdf, plaintext
 
